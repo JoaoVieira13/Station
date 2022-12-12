@@ -2,11 +2,12 @@ package Services;
 
 import java.util.Scanner;
 import Classes.Comboio;
+import Armazenamento.SalvarComboios;
 
 public class CriarComboio {
     Scanner scanner = new Scanner(System.in);
 
-    public void executar(){
+    public void executar(SalvarComboios repositorio){
     String id, destino;
     int passageiros;
 
@@ -23,9 +24,10 @@ public class CriarComboio {
     // -------------------------------------------------------------------
 
     comboio = new Comboio(id, destino, passageiros);
-    System.out.println("Comboio criado com sucesso!");	
-    System.out.println("Id: " + comboio.getId());
-    System.out.println("Destino: " + comboio.getDestino());
-    System.out.println("Passageiros: " + comboio.getPassageiros());
+        repositorio.addComboio(comboio);
+        System.out.println(repositorio.toString());
+        // System.out.println(id);
+        // System.out.println(destino);
+        // System.out.println(passageiros);
     }
 }
