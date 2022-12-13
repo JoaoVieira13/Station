@@ -11,9 +11,8 @@ public class ArmazenarComboios {
     }
 
     public static int Write(SalvarComboios comboios) {
-        try (FileOutputStream fs = new FileOutputStream("Comboios.arq");
+        try (FileOutputStream fs = new FileOutputStream("Comboios.txt");
         ObjectOutputStream os = new ObjectOutputStream(fs)) {
-          
           
           os.writeObject(comboios); //referencia a estrutura que se quer armazenar
           os.close( );

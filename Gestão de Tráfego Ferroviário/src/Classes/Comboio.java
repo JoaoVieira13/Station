@@ -1,6 +1,8 @@
 package Classes;
 
-public class Comboio {
+import java.io.Serializable;
+
+public class Comboio implements Serializable {
     private String id;
     private String destino;
     private int passageiros;

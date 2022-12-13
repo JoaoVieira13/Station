@@ -25,7 +25,6 @@ public class CriarComboio {
 
     comboio = new Comboio(id, destino, passageiros);
         repositorio.addComboio(comboio);
-        System.out.println(repositorio.toString());
         // System.out.println(id);
         // System.out.println(destino);
         // System.out.println(passageiros);
