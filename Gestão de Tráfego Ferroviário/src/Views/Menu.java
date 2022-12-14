@@ -2,6 +2,10 @@ package Views;
 
 import java.util.Scanner;
 
+import Armazenamento.ArmazenarComboios;
+import Armazenamento.SalvarComboios;
+import Services.CriarComboio;
+
 public class Menu {
     private Menu() {}
 
@@ -41,7 +45,12 @@ public class Menu {
                 Menu.execMenu();
                 break;
             case 1:
-                // CriarComboio.criarComboio();
+                CriarComboio criarComboio = new CriarComboio();
+                SalvarComboios salvarComboios = new SalvarComboios();
+                ArmazenarComboios armazenarComboios = new ArmazenarComboios();
+
+                criarComboio.executar(salvarComboios);
+                armazenarComboios.Write(salvarComboios);
                 break;
             case 2:
                 // EditarComboio.editarComboio();

@@ -7,14 +7,14 @@ import java.io.ObjectOutputStream;
 
 public class ArmazenarComboios {
 
-    private ArmazenarComboios() {
+    public ArmazenarComboios() {
     }
 
     public static int Write(SalvarComboios comboios) {
         try (FileOutputStream fs = new FileOutputStream("Comboios.txt");
         ObjectOutputStream os = new ObjectOutputStream(fs)) {
           
-          os.writeObject(comboios); //referencia a estrutura que se quer armazenar
+          os.writeObject(comboios.getComboio(0)); //referencia a estrutura que se quer armazenar
           os.close( );
           System.out.println("Comboios Guardados com Sucesso!");
           return 0;

@@ -1,11 +1,8 @@
 package Classes;
 
-import java.lang.reflect.Array;
-
 public class Estacao {
     private String id;
     private String nome;
-    private Array id_comboio;
     private int numLinhas;
     private int capacidade;
 
@@ -23,14 +20,6 @@ public class Estacao {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public Array getId_comboio() {
-        return this.id_comboio;
-    }
-
-    public void setId_comboio(Array id_comboio) {
-        this.id_comboio = id_comboio;
     }
 
     public int getNumLinhas() {

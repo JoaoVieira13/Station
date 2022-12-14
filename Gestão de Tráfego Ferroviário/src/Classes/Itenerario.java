@@ -8,7 +8,7 @@ public class Itenerario {
     private String id_estacao_chegada;
     private LocalDate partida;
     private LocalDate chegada;
-    private String id_troço;
+    Troco troco;
 
     public String getId_comboio() {
         return this.id_comboio;
@@ -50,12 +50,11 @@ public class Itenerario {
         this.chegada = chegada;
     }
 
-    public String getId_troçO() {
-        return this.id_troço;
+    public Troco getTroco() {
+        return this.troco;
     }
-
-    public void setId_troçO(String id_troço) {
-        this.id_troço = id_troço;
+    
+    public void setTroco(Troco troco) {
+        this.troco = troco;
     }
-
 }

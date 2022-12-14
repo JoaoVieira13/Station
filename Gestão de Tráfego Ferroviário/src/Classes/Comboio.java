@@ -6,6 +6,7 @@ public class Comboio implements Serializable {
     private String id;
     private String destino;
     private int passageiros;
+	Itenerario itenerario; 
 
     public Comboio() {
     }
@@ -38,6 +39,14 @@ public class Comboio implements Serializable {
 
 	public void setPassageiros(int passageiros) {
 		this.passageiros = passageiros;
+	}
+
+	public Itenerario getItenerario() {
+		return this.itenerario;
+	}
+
+	public void setItenerario(Itenerario itenerario) {
+		this.itenerario = itenerario;
 	}
 
 }
