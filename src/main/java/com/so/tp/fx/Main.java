@@ -12,9 +12,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Main extends Application {
-    public static List<Passageiro> passageiros = new LinkedList<>();
-    public static List<Passageiro> passageirosComboio1 = new LinkedList<>();
-    public static List<Passageiro> passageirosComboio2 = new LinkedList<>();
+    public static List<Passageiro> passageiros = new ArrayList<>();
+//    public static List<Passageiro> passageirosComboio1 = new LinkedList<>();
+//    public static List<Passageiro> passageirosComboio2 = new LinkedList<>();
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -183,23 +183,11 @@ public class Main extends Application {
 
         List<Comboio> comboios = new LinkedList<>();
 
-        //listar passageiros com bilhete para a linha 1
-        for (Passageiro passageiro : passageiros) {
-            if (passageiro.getBilhete().getLinha().getNumero() == 1) {
-                passageirosComboio1.add(passageiro);
-            }
-        }
-        for (Passageiro passageiro : passageiros) {
-            if (passageiro.getBilhete().getLinha().getNumero() == 2) {
-                passageirosComboio2.add(passageiro);
-            }
-        }
+        Comboio comboio1 = new Comboio(1, 100, horariosLinhaPorto1, passageiros);
+        Comboio comboio2 = new Comboio(2, 100, horariosLinhaPorto1Volta, passageiros);
 
-        Comboio comboio1 = new Comboio(1, 100, horariosLinhaPorto1, passageirosComboio1);
-        Comboio comboio2 = new Comboio(2, 100, horariosLinhaPorto1Volta, passageirosComboio2);
-
-        Comboio comboio3 = new Comboio(3, 100, horariosLinhaPorto2, passageirosComboio1);
-        Comboio comboio4 = new Comboio(4, 100, horariosLinhaPorto2Volta, passageirosComboio2);
+        Comboio comboio3 = new Comboio(3, 100, horariosLinhaPorto2, passageiros);
+        Comboio comboio4 = new Comboio(4, 100, horariosLinhaPorto2Volta, passageiros);
 
         comboios.add(comboio1);
         comboios.add(comboio2);
@@ -207,6 +195,26 @@ public class Main extends Application {
         comboios.add(comboio4);
 
         iniciaComboios(comboios);
+
+        //Adicionar um passageiro ao comboio se o bilhetes for válido
+        if (comboios != null && !comboios.isEmpty() && passageiros != null && !passageiros.isEmpty()) {
+            List<Passageiro> novosPassageiros = new ArrayList<>();
+
+            for (Passageiro passageiro : passageiros) {
+                if (passageiro != null && passageiro.getBilhete() != null && passageiro.getBilhete().getLinha() != null) {
+                    for (Comboio comboio : comboios) {
+                        if (comboio != null && comboio.getHorarioAtual() != null && comboio.getHorarioAtual().getLinha() != null && passageiro.getBilhete().getLinha().getNumero() == comboio.getHorarioAtual().getLinha().getNumero()) {
+                            novosPassageiros.add(passageiro);
+                            //ADICIONAR AQUI O MÉTODO PARA ADICIONAR O PASSAGEIRO AO COMBOIO
+
+                            //System.out.println("O passageiro " + passageiro.getNome() + " tem bilhete para o comboio " + comboio.getNumero());
+                        }
+                    }
+                }
+            }
+
+            passageiros.addAll(novosPassageiros);
+        }
     }
 
     public static void iniciaComboios(List<Comboio> comboios){
