@@ -31,6 +31,10 @@ public class Main extends Application {
         //PainelControlo.criaEstacoes();
         //launch();
 
+        geradorDeDados();
+    }
+
+    public static void geradorDeDados(){
         // Cria algumas estações
         Estacao estacao1 = new Estacao(1, "Marco Canaveses", 100);
         Estacao estacao2 = new Estacao(2, "Livração", 200);
@@ -93,12 +97,16 @@ public class Main extends Application {
         Linha linhaPorto1Volta = new Linha(2, "Volta", estacoesLinhaPorto1);
 
         Linha linhaPorto2 = new Linha(3, "Ida", estacoesLinhaPorto2);
-        Linha linhaPorto3 = new Linha(4, "Ida", estacoesLinhaPorto3);
+        Linha linhaPorto2Volta = new Linha(4, "Volta", estacoesLinhaPorto2);
+
+        Linha linhaPorto3 = new Linha(5, "Ida", estacoesLinhaPorto3);
 
         // Guarda as linhas num map
         Map<Integer, Linha> linhas = new HashMap<>();
         linhas.put(linhaPorto1.getNumero(), linhaPorto1);
+        linhas.put(linhaPorto1Volta.getNumero(), linhaPorto1Volta);
         linhas.put(linhaPorto2.getNumero(), linhaPorto2);
+        linhas.put(linhaPorto2Volta.getNumero(), linhaPorto2Volta);
         linhas.put(linhaPorto3.getNumero(), linhaPorto3);
 
         // Cria alguns horários
@@ -107,7 +115,7 @@ public class Main extends Application {
         Horario horario3 = new Horario("10:00", "11:00", linhaPorto1);
 
         Horario horario4 = new Horario("8:00", "9:00", linhaPorto2);
-        Horario horario5 = new Horario("9:00", "10:00", linhaPorto2);
+        Horario horario5 = new Horario("9:00", "10:00", linhaPorto2Volta);
         Horario horario6 = new Horario("10:00", "11:00", linhaPorto2);
 
         Horario horario7 = new Horario("8:00", "9:00", linhaPorto3);
@@ -127,6 +135,9 @@ public class Main extends Application {
         horariosLinhaPorto2.add(horario4);
         //horariosLinhaPorto2.add(horario5);
         //horariosLinhaPorto2.add(horario6);
+
+        List<Horario> horariosLinhaPorto2Volta = new LinkedList<>();
+        horariosLinhaPorto2Volta.add(horario5);
 
         List<Horario> horariosLinhaPorto3 = new LinkedList<>();
         horariosLinhaPorto3.add(horario7);
@@ -172,14 +183,6 @@ public class Main extends Application {
 
         List<Comboio> comboios = new LinkedList<>();
 
-        // Cria alguns comboios
-        //listar comboios com bilhetes para a linha 1
-        for (Comboio comboio : comboios) {
-            if (comboio.getHorarios().get(0).getLinha().getNumero() == 1) {
-                
-            }
-        }
-
         //listar passageiros com bilhete para a linha 1
         for (Passageiro passageiro : passageiros) {
             if (passageiro.getBilhete().getLinha().getNumero() == 1) {
@@ -194,44 +197,74 @@ public class Main extends Application {
 
         Comboio comboio1 = new Comboio(1, 100, horariosLinhaPorto1, passageirosComboio1);
         Comboio comboio2 = new Comboio(2, 100, horariosLinhaPorto1Volta, passageirosComboio2);
-        
+
+        Comboio comboio3 = new Comboio(3, 100, horariosLinhaPorto2, passageirosComboio1);
+        Comboio comboio4 = new Comboio(4, 100, horariosLinhaPorto2Volta, passageirosComboio2);
+
         comboios.add(comboio1);
         comboios.add(comboio2);
-       
-        comboio1.start();
-        comboio2.start();
+        comboios.add(comboio3);
+        comboios.add(comboio4);
 
-//        comboio1.setPassageiros(99);
+        iniciaComboios(comboios);
+    }
 
+    public static void iniciaComboios(List<Comboio> comboios){
 
-        // verifica se comboio tem espaco disponivel para passageiros
+        //instancia do objeto random para gerar um valor aleatório
+        Random random = new Random();
 
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        //Guarda numa lista os comboios encontrados em sentido contrario namesma linha
+        List<Comboio[]> comboiosEmSentidoContrario = new LinkedList<>();
 
-        Runnable task = () -> {
-                for (Comboio comboio : comboios) {
-                    for (Comboio comboio_ : comboios) {
-                        Horario horario_ = comboio.getHorarioAtual();
-                        Horario horario_2 = comboio_.getHorarioAtual();
-                        if (horario_ != null && horario_2 != null) {
-                            if (horario_.getLinha().getEstacoes() == horario_2.getLinha().getEstacoes() && comboio.getNumero() != comboio_.getNumero() && !horario_.getLinha().getSentido().equals(horario_2.getLinha().getSentido())) {
-                                System.out.println("\033[31;1mEXISTEM COMBOIOS NA MESMA LINHA EM SENTIDOS DIFERENTES: COMBOIO \033[0m" + comboio.getNumero() + "\033[31;1m & COMBOIO\033[0m " + comboio_.getNumero());
-                                break;
-                            } else if ( comboio.getNumero() == comboio_.getNumero()){
-                                break;
-                            } else {
-                                System.out.printf("\033[31;1mHÁ COMBOIOS COM SENTIDOS IGUAIS NA MESMA LINHA!!!\033[0m%n");
-                                break;
-                            }
-                        }
-                        else{
-                            System.out.println("Não há comboios");
-                        }
-                    }
+        //Guarda numa lista os comboios prontos para partir
+        List<Comboio> comboiosParaPartir = new LinkedList<>();
+
+        //Variavel auxiliar para ajudar na partida de comboios
+        Comboio aux = null;
+
+        //Precorre a lista de comboios para compara-los
+        for (int i = 0; i < comboios.size(); i++) { //primeiro ciclo for
+            Comboio comboio = comboios.get(i);
+            comboio.setHorarioAtual(comboio.getHorarios().get(0));
+
+            boolean encontrouComboioContrario = false;
+            /* segundo ciclo for para comparar com o comboio anterior, repare-se que j assume o valor de i+1,
+               por essa razão foi necessario usar este ciclo for tradicional */
+            for (int j = i + 1; j < comboios.size(); j++) {
+                Comboio outroComboio = comboios.get(j);
+                outroComboio.setHorarioAtual(outroComboio.getHorarios().get(0));
+                //Verifica se as estações que os comboios vão percorrer são iguauis e se o sentido é contrário
+                if (comboio.getHorarioAtual().getLinha().getEstacoes().equals(outroComboio.getHorarioAtual().getLinha().getEstacoes()) &&
+                        !comboio.getHorarioAtual().getLinha().getSentido().equals(outroComboio.getHorarioAtual().getLinha().getSentido()) && comboio.getNumero() != outroComboio.getNumero()) {
+
+                    aux = outroComboio; //guarda na variavel aux o comboio que esta em sentido contrário
+                    comboiosEmSentidoContrario.add(new Comboio[]{comboio, outroComboio});
+                    encontrouComboioContrario = true;
                 }
-        };
+            }
+            if (!encontrouComboioContrario) {
+                if (aux != comboio){ //verifica se está a entrar neste metodo um comboio que já foi dado como estando em sentido contrário
+                    comboiosParaPartir.add(comboio); //se não estiver adiciona-o a lista de comboios para partir
+                }
+            }
+        }
 
-        scheduler.schedule(task, 2, TimeUnit.MILLISECONDS);
+        //metodo para percorrer os comboios em sentido contrário
+        for (Comboio[] comboiosContrarios : comboiosEmSentidoContrario) {
+            int index = random.nextInt(2); //gera um numero aleatorio entre 0 e 1
+            Comboio comboio = comboiosContrarios[index]; //se o numero for 0 escolhe o primeiro comboio, se for 1 escolhe o segundo
 
+            System.out.println("\033[31m" + "COMBOIO " + comboio.getNumero() + " E COMBOIO " + comboiosContrarios[1 - index].getNumero() + " EM SENTIDO CONTRÁRIO!" + "\033[0m");
+            System.out.println("\033[32m" + "Apenas o comboio " + comboio.getNumero() + " seguiu viagem" + "\033[0m");
+
+            comboiosParaPartir.add(comboio); //adiciona o comboio escolhido a lista de comboios para partir
+        }
+
+        //metodo para percorrer os comboios dados como prontos para partir
+        for (Comboio comboio : comboiosParaPartir) {
+            System.out.println("Comboio " + comboio.getNumero() + " partiu"); //imprime os comboios que vão partir
+            comboio.start(); //inicia os comboios que estão na lista
+        }
     }
 }

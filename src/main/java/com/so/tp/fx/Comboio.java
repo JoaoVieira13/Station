@@ -93,11 +93,10 @@ public class Comboio extends Thread {
             if (isOvercrowded()) {
                 System.out.println("Conflito no comboio " + getNumero() + ": comboio sobrelotado");
                 return;
-            }
-            else{
+            } else {
                 nPassageiros++;
             }
-            
+
         } finally {
             semaforo.release();
         }
@@ -140,12 +139,12 @@ public class Comboio extends Thread {
             // sout do conflito
             System.out.println("Conflito no comboio " + getNumero() + ": passageiro " + passageiro.getNome() + " tentou entrar sem bilhete válido");
         } else if (!passageiro.isEstaNoComboio() && !passageiro.isSaiuDoComboio()) { //senão se o passageiro não estiver no comboio e não tiver saído do comboio antes
-            if(!this.isOvercrowded()){
+            if (!this.isOvercrowded()) {
                 this.addPassenger(passageiro); //adiciona o passageiro ao comboio
                 passageiro.setEstaNoComboio(true); //registamos que o passageiro está no comboio
                 // sout do embarque
                 System.out.println("Passageiro " + passageiro.getNome() + " embarcou no comboio " + getNumero() + " na estação " + getEstacaoAtual().getNome());
-            } else{
+            } else {
                 System.out.println("Passageiro " + passageiro.getNome() + " não embarcou no comboio " + getNumero() + " na estação " + getEstacaoAtual().getNome() + "porque o comboio estava sobrelotado");
             }
         }
@@ -190,7 +189,7 @@ public class Comboio extends Thread {
                 // Abre as portas do comboio a cada 5 segundos
                 try {
                     this.openDoors();
-                    
+
                     //verifica se há passageiros no comboio que querem sair na estação atual
                     for (Passageiro passageiro : passageiros) {
                         if (passageiro.getBilhete().getEstacaoSaida().getNumero() == currentStation.getNumero() && passageiro.getBilhete().getLinha().getNumero() == line.getNumero() && passageiro.isEstaNoComboio()) {
@@ -201,17 +200,11 @@ public class Comboio extends Thread {
                     //verifica se há passageiros na estação que querem entrar no comboio
                     for (Passageiro passageiro : passageiros) {
                         if (passageiro.getBilhete().getEstacaoEntra().getNumero() == currentStation.getNumero() && passageiro.getBilhete().getLinha().getNumero() == line.getNumero() && !passageiro.isTentouEntrar()) {
-                           
                             this.embarcarPassageiro(passageiro);
                         }
                     }
 
                     for (Passageiro passageiro : passageiros) {
-//                        if (passageiro.getBilhete().getEstacaoEntra().getNumero() == currentStation.getNumero() && ) {
-//                            if (passageiro.getBilhete().getLinha().getNumero() == line.getNumero() && !passageiro.isTentouEntrar()) {
-//                                this.embarcarPassageiro(passageiro);
-//                            }
-//                        }
                         // atribui o comboio ao passageiro
                         passageiro.setComboio(this);
                         if (passageiro.getBilhete().getEstacaoEntra().getNumero() == currentStation.getNumero() && passageiro.getBilhete().getLinha().getNumero() == line.getNumero() && !passageiro.isTentouEntrar()) {
@@ -232,9 +225,9 @@ public class Comboio extends Thread {
 
                 // Fecha as portas do comboio por 2 segundos
                 try {
-                    for (Passageiro passageiro : passageiros) {
-                        this.desembarcarPassageiro(passageiro);
-                    }
+//                    for (Passageiro passageiro : passageiros) {
+//                        this.desembarcarPassageiro(passageiro);
+//                    }
                     this.closeDoors();
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -264,7 +257,7 @@ public class Comboio extends Thread {
                 setEstacaoAtual(currentStation);
 
                 //informações para o utilizador
-                System.out.println("Passageiros a bordo no comboio " + this.getNumero() + ": "+ this.getPassageiros());
+                System.out.println("Passageiros a bordo no comboio " + this.getNumero() + ": " + this.getPassageiros());
                 System.out.println("\n");
             }
         }
